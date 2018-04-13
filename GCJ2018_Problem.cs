@@ -1,39 +1,43 @@
 ﻿using System;
+using System.Collections.Generic;
 using System.Diagnostics;
 using System.Globalization;
 using System.IO;
+using System.Linq;
 
 namespace Contest
 {
     public class GCJ2018_Problem
     {
-        private static readonly IFormatProvider formatProvider = CultureInfo.InvariantCulture;
-
-        protected void ReadInput(StreamReader reader)
+        protected void SolveAndWrite(int problemIndex, TextWriter writer)
         {
-
         }
 
-        protected void SolveAndWrite(int problemIndex, StreamWriter writer)
+        protected void ReadInput(TextReader reader)
         {
-
         }
 
         public void Run()
         {
-            StreamReader reader = null;
-            StreamWriter writer = null;
+            TextReader reader = null;
+            TextWriter writer = null;
             try
             {
                 reader = new StreamReader("input.txt");
                 writer = new StreamWriter("output.txt");
 
-                int problemCount = ParseInt(reader.ReadLine());
+                // The default buffer size for the console is 256 bytes.
+                // Depending on the size of the input this might not be enough.
+                reader = Console.In;
+                writer = Console.Out;
+
+                int problemCount = Helper.ParseInt(reader.ReadLine());
                 for (int problemIndex = 1; problemIndex <= problemCount; problemIndex++)
                 {
                     ReadInput(reader);
-                    writer.WriteLine("Case #{0}: ", problemIndex);
+                    writer.Write("Case #{0}: ", problemIndex);
                     SolveAndWrite(problemIndex, writer);
+                    writer.WriteLine();
                 }
             }
             catch (Exception e)
@@ -50,11 +54,36 @@ namespace Contest
                     writer.Dispose();
             }
         }
+    }
 
+    /// <summary>
+    /// Helpers for converting input/output data.
+    /// </summary>
+    public class Helper
+    {
+        /// <summary>
+        /// Run one problem at a time.
+        /// Just initialize the solver with the correct one.
+        /// </summary>
+        public static void Main(string[] args)
+        {
+            GCJ2018_Problem instance = new GCJ2018_Problem();
+            instance.Run();
+        }
 
         public static int ParseInt(string value)
         {
-            return Int32.Parse(value, formatProvider);
+            return Int32.Parse(value, FormatProvider);
+        }
+
+        public static double ParseDouble(string value)
+        {
+            return Double.Parse(value, FormatProvider);
+        }
+
+        public static float ParseFloat(string value)
+        {
+            return Single.Parse(value, FormatProvider);
         }
 
         public static int[] ParseInts(string line)
@@ -68,14 +97,11 @@ namespace Contest
             return result;
         }
 
-        /// <summary>
-        /// Run one problem at a time.
-        /// Just initialize the solver with the correct one.
-        /// </summary>
-        public static void Main(string[] args)
+        public static string ToStr(double v)
         {
-            GCJ2018_Problem instance = new GCJ2018_Problem();
-            instance.Run();
+            return v.ToString(FormatProvider);
         }
+
+        public static readonly IFormatProvider FormatProvider = CultureInfo.InvariantCulture;
     }
 }
